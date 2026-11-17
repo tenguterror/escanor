@@ -55,6 +55,18 @@ Assetto Corsa replay adapter       GNSS / IMU / ECU / logger adapter
        Escanor Sim UI or Motorsport UI
 ```
 
+## Confirmed requirement — cross-platform support
+
+**Target operating systems:** Windows and Linux first; macOS where supported by the data source and dependencies. Development begins on WSL2 Ubuntu, but the shipped application must not depend on WSL.
+
+- Keep replay parsing, telemetry normalization, track analysis, local web server and dashboard **OS-independent** (Python/portable web technologies).
+- Use platform-neutral filesystem paths and configuration: `pathlib`, user-selected replay/log directories and application data directories. Do not hardcode `C:\\Users\\vegas`, `/mnt/c` or a OneDrive path.
+- Keep file discovery/watching behind an adapter. Prefer a cross-platform watcher, with an appropriate polling fallback for WSL reading Windows-mounted files and network mounts, where filesystem events may be unreliable.
+- Separate **offline replay analysis** from **live telemetry acquisition**. Original Assetto Corsa's Windows shared-memory interface requires a Windows-specific collector; Linux or macOS analysis clients can still work with saved files or a network stream. Validate game availability and supported sources per OS rather than claiming every game runs natively everywhere.
+- Include automated tests for supported OS platforms in CI when implementations exist; expose unsupported source integrations clearly instead of breaking the whole app.
+
+**Implementation priority:** Architecture constraint confirmed now; first milestone still decoding and verifying a known-good E46 `.acreplay` in WSL2.
+
 ## Proposed architecture — not yet finalized
 
 ```text
