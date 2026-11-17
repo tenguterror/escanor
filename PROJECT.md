@@ -138,6 +138,25 @@ Investigate ingestion/export of MoTeC-compatible telemetry files and/or CSV expo
 
 **Priority:** Product direction **confirmed**, implementation **after** the single-car replay decoder and track analysis are validated. Stage into local-only live display, LAN viewer, then automated post-run coach report.
 
+## Confirmed direction — Motorsport vehicle-health correlation
+
+**User need:** Real-world drift teams frequently already connect tuning laptops and ECU logging equipment to their cars. After a run, the driver and coach should be able to correlate an unexpected loss of performance at a precise track location with synchronized engine and vehicle sensor channels.
+
+### Potential post-run report
+
+- Playback/overlay: speed, path, yaw and drift angle alongside RPM, pedal position, manifold pressure, fuel pressure, lambda/AFR, ignition/injection status, coolant/oil temperatures and fault codes **when that data is actually logged**.
+- Flag measured abnormalities, such as fuel-pressure deviations from the engine's valid target or ECU-reported misfire/fault events. Show which exact sensors and time ranges support the finding.
+- Distinguish **measured symptom** (e.g. pressure sag), **plausible hypothesis** (e.g. fuel delivery issue), and **confirmed diagnosis** (only with appropriate evidence and technician confirmation).
+- Align all channels by timestamp and track coordinates; record sample rate, missing channels, unit conversion, timestamp drift, logging gaps and sensor/ECU calibration.
+- Explain driving implications without blindly attributing a power-loss event to the driver. Compare similar runs to spot repeatable section-linked symptoms.
+- **Read-only diagnostics:** Escanor must not automatically change ECU maps, tune ignition/fuel, disable engine protection, or issue vehicle-control commands. Do not replace established safety alerts; advise checking with qualified mechanics/tuners when potentially damaging conditions occur.
+
+### Integration exploration
+
+Prioritize **existing motorsport ECU/data-logger logs** and exports (including MoTeC i2-compatible workflows) rather than requiring the Escanor hardware kit. Capability varies by ECU/logger, enabled channels and sensor installation; future adapters should state exactly what each supported device can provide.
+
+**Status:** Product vision confirmed; adapter support and engine-health analysis are post-MVP research and validation work, not a claim of existing capability.
+
 ## Parking lot — live event demonstration (future)
 
 **Concept:** SEMA or grassroots track-event booth where visitors drive an Assetto Corsa simulator while Escanor shows a live spectator display of track position, speed, throttle, approximate drift angle and judged-zone proximity. After each run, produce a concise coaching report, offer a second run for comparison, and optionally let a visitor export their own report via QR code.
