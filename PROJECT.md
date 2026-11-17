@@ -107,6 +107,15 @@ Investigate ingestion/export of MoTeC-compatible telemetry files and/or CSV expo
 - Multiple cars per replay and tandem lead/chase analysis.
 - Track profile editor and community profiles.
 
+## Parking lot — other driving games (deferred, optional)
+
+**Status:** Idea only. Not an MVP requirement. Abandon if maintainability, multiplayer limits, data quality or legal compatibility makes it impractical.
+
+- **Forza Horizon 6:** Official `Data Out` UDP packets provide live player-car telemetry including world position, yaw/orientation, local velocity, driver inputs, tires and engine channels. A future optional logger/adapter could capture runs while driving and map fields into Escanor's versioned common telemetry schema. Native game replay playback does *not* emit this stream, so sessions must be logged live. Official format documentation: https://support.forza.net/hc/en-us/articles/51744149102611-Forza-Horizon-6-Data-Out-Documentation
+- **CarX Drift Racing Online:** Investigate community-supported data interfaces, e.g., ErinSteph/ErinsMod (Outgauge JSON/binary endpoints) and existing competition-zone judging work such as CHAPPiE. Check available channels, mod reliability, version compatibility, mod policies and multiplayer capture before proposing a supported adapter. https://github.com/ErinSteph/ErinsMod ; https://chappie.online/download
+- **Events:** Track profiles and attributed user/event zones are reusable concepts. Before promising tandem analysis, test whether a legally permitted data source supplies synchronized telemetry for **both** vehicles; player-only telemetry cannot measure the other driver's exact line.
+- **Architecture decision for now:** Keep the common telemetry schema and source-adapter boundary generic; do **not** implement FH6 or CarX until the Assetto Corsa decoder and track-zone MVP work end-to-end.
+
 ## Known constraints / uncertainties
 
 - Existing Escanor instructions describe Assetto Corsa single-car `.acreplay` v16 decoding; an independent executable decoder and test replay are not yet in this repository.
