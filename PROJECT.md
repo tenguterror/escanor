@@ -157,6 +157,26 @@ Prioritize **existing motorsport ECU/data-logger logs** and exports (including M
 
 **Status:** Product vision confirmed; adapter support and engine-health analysis are post-MVP research and validation work, not a claim of existing capability.
 
+## Confirmed direction — ECU fuel map / wideband lambda analysis (Motorsport)
+
+**Concept:** After an on-track run, provide read-only, position- and time-aligned visualization of the ECU's operating regions (RPM vs load) against the **correct calibration snapshot**, measured/target lambda, closed-loop corrections, fuel pressure and driver inputs. Help a tuner understand whether inconsistent engine response may have disrupted a drift run.
+
+### Required inputs and interpretation
+
+- Capture **ECU calibration snapshot** with fuel/VE tables, axes, active maps/modes, lambda target, and correction strategies; a datalog alone may *not* contain the table values or which map was active. Keep a calibration identifier/version for every run.
+- Capture available logged channels with units, sampling rate and provenance: RPM, MAP/load, throttle, lambda targets and measured wideband lambda (both banks if applicable), lambda control trims, fuel pressure *and manifold pressure*, injector pulsewidth/duty, relevant protection and fault flags, and ignition/boost channels where supported.
+- Map time samples to **interpolated** operating regions, not naïvely one fixed cell, and present coverage/dwell and transient conditions. Compensate where validated for sensor lag, log synchronization, dynamic enrichment, closed-loop control, fuel cuts, and sensor validity.
+- Overlay track location and driving performance (speed, angle, throttle, changes in acceleration/rotation) to show **correlation**, not automatically assert causation.
+- Flag deviations from verified, engine-specific targets and identify *possible* causes for further investigation (e.g. sensor, misfire, fuel system, calibration). Surface confidence and missing data explicitly.
+- Deliver a prioritized **review suggestion for a qualified tuner**, never an unverified cell value, instant calibration patch, or automatic ECU write.
+
+### Integration strategy and constraints
+
+- Start with imported/exported logs and tune snapshots from supported existing ECUs; do not need Escanor-branded hardware.
+- Investigate MoTeC M1/M1 Tune and i2 workflows, Haltech, Link and other vendor-supported interfaces incrementally, respecting file-format and software license restrictions.
+- Preserve read-only design. No commands that alter ECU calibrations, disable failsafes, or apply adjustments during a run.
+- **Priority:** Future Motorsport development, not part of initial Assetto Corsa replay MVP. Build after verified telemetry import/time alignment and run-health correlation.
+
 ## Parking lot — live event demonstration (future)
 
 **Concept:** SEMA or grassroots track-event booth where visitors drive an Assetto Corsa simulator while Escanor shows a live spectator display of track position, speed, throttle, approximate drift angle and judged-zone proximity. After each run, produce a concise coaching report, offer a second run for comparison, and optionally let a visitor export their own report via QR code.
