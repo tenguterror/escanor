@@ -4,6 +4,10 @@
 **Status:** Planning / repository initialization  
 **Owner:** Tengu
 
+## Official motto
+
+**Understand the car. Master the drift.** ☀️
+
 ## Mission
 
 Build an approachable, local-first drifting coach so drivers can learn from reliable telemetry, understand their car, improve their judged line and proximity, and evaluate changes scientifically.
