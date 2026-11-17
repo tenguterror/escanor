@@ -116,6 +116,16 @@ Investigate ingestion/export of MoTeC-compatible telemetry files and/or CSV expo
 - **Events:** Track profiles and attributed user/event zones are reusable concepts. Before promising tandem analysis, test whether a legally permitted data source supplies synchronized telemetry for **both** vehicles; player-only telemetry cannot measure the other driver's exact line.
 - **Architecture decision for now:** Keep the common telemetry schema and source-adapter boundary generic; do **not** implement FH6 or CarX until the Assetto Corsa decoder and track-zone MVP work end-to-end.
 
+## Parking lot — live event demonstration (future)
+
+**Concept:** SEMA or grassroots track-event booth where visitors drive an Assetto Corsa simulator while Escanor shows a live spectator display of track position, speed, throttle, approximate drift angle and judged-zone proximity. After each run, produce a concise coaching report, offer a second run for comparison, and optionally let a visitor export their own report via QR code.
+
+**Technical exploration:** For original Assetto Corsa, investigate live shared-memory physics, graphics, and static data as a distinct adapter from offline `.acreplay` decoding. The common telemetry schema should support both live streaming and offline post-run analysis.
+
+**Guardrails:** Keep computationally heavy AI analysis and recommendations after the run; don't distract the driver mid-corner. Label zones as official or demonstration-defined, account for geometric/telemetry uncertainty, sanitize public leaderboards, and obtain opt-in before publishing or sharing participant data.
+
+**Priority:** Deferred showcase concept, **not** an MVP dependency. First prove repeatable, validated single-car replay measurements.
+
 ## Known constraints / uncertainties
 
 - Existing Escanor instructions describe Assetto Corsa single-car `.acreplay` v16 decoding; an independent executable decoder and test replay are not yet in this repository.
