@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+# JavaScript
+node_modules/
+dist/
+build/
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.key
+# Local driver data / large input files
+*.acreplay
+*.ld
+*.ldx
+*.ibt
+*.rpy
+*.log
+data/local/
+data/private/
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
