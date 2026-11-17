@@ -116,6 +116,28 @@ Investigate ingestion/export of MoTeC-compatible telemetry files and/or CSV expo
 - **Events:** Track profiles and attributed user/event zones are reusable concepts. Before promising tandem analysis, test whether a legally permitted data source supplies synchronized telemetry for **both** vehicles; player-only telemetry cannot measure the other driver's exact line.
 - **Architecture decision for now:** Keep the common telemetry schema and source-adapter boundary generic; do **not** implement FH6 or CarX until the Assetto Corsa decoder and track-zone MVP work end-to-end.
 
+## Confirmed direction — Live Mode and LAN coaching
+
+**Goal:** A driver can have Escanor visible on a second monitor while an invited coach watches from a laptop/browser on the same local network. The coach gets real-time run metrics and an automatic, evidence-backed summary **as soon as the run finishes**.
+
+### User experience
+
+- **Driver dashboard (same PC):** current speed, drift angle (when accurately derived), throttle, map position, section/zone indicators and recording status; remain unobtrusive during driving.
+- **Coach dashboard (LAN browser):** live track trace, section progression, per-zone measurements and read-only telemetry. No installation required on the coach laptop.
+- **Post-run review:** detect or let the driver mark run end; calculate finalized metrics, publish a run summary, show one priority coaching point, and compare with the previous run.
+- **Optional later:** coach annotations, session sharing and between-run feedback. No safety-critical real-time commands to a moving driver.
+
+### Proposed implementation (not yet finalized)
+
+- Read Assetto Corsa live physics through the game host's **shared-memory interface**; support offline replay files via a separate adapter.
+- Capture high-resolution timestamped samples locally and derive standardized telemetry; stream **downsampled** display updates from a local Python backend to authorized browser clients over WebSockets.
+- One web dashboard with **Driver** and **Coach** views, served from the sim PC; access from another device using its LAN IP or local hostname. Keep the app usable without Internet/cloud services.
+- Share data only when driver starts a session, with explicit permission, session-specific access token, optional LAN/TLS protection where appropriate, and simple stop/revoke controls. Do not expose raw telemetry to the public Internet by default.
+- Handle connection drops, clock synchronization, read-only clients, CPU overhead and buffering so a network or AI failure does not affect sim gameplay.
+- AI recommendations happen after a run, based on finalized validated metrics; a coach may inspect live measurements but should not receive unverified diagnoses presented as facts.
+
+**Priority:** Product direction **confirmed**, implementation **after** the single-car replay decoder and track analysis are validated. Stage into local-only live display, LAN viewer, then automated post-run coach report.
+
 ## Parking lot — live event demonstration (future)
 
 **Concept:** SEMA or grassroots track-event booth where visitors drive an Assetto Corsa simulator while Escanor shows a live spectator display of track position, speed, throttle, approximate drift angle and judged-zone proximity. After each run, produce a concise coaching report, offer a second run for comparison, and optionally let a visitor export their own report via QR code.
