@@ -1,6 +1,8 @@
 # Escanor ☀️
 
-**A local-first, AI-independent drift telemetry and coaching project.**
+**Understand the car. Master the drift.**
+
+A local-first, AI-independent drift telemetry and coaching project.
 
 Escanor aims to help Assetto Corsa drivers understand what their car is doing, improve judged runs, and test setup changes against real telemetry—not guesses.
 
