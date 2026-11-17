@@ -187,6 +187,38 @@ Prioritize **existing motorsport ECU/data-logger logs** and exports (including M
 
 **Priority:** Deferred showcase concept, **not** an MVP dependency. First prove repeatable, validated single-car replay measurements.
 
+## Parking lot — multi-discipline motorsport platform (future vision)
+
+**Idea raised November 17, 2026:** Escanor's underlying telemetry, track-map, run-comparison, vehicle-health and coach-facing analysis could extend beyond drift into endurance/sports-car racing (including Le Mans-style events), drag racing, and SCCA/club racing.
+
+**Status:** Exploratory architecture direction, *not* a promise to build these products or change the Assetto Corsa drifting MVP.
+
+### Architectural principle
+
+**Shared, sport-agnostic evidence engine; discipline-specific scoring and coaching.**
+
+- Keep timestamped telemetry acquisition, units, provenance, quality flags, synchronization, run storage, visualization and optional AI adapters generic.
+- Implement per-discipline analysis profiles with explicitly defined metrics, event rules, intervals and failure cases.
+- Do not assume a metric carries the same interpretation in all motorsports: large yaw/slip angle is a target in drifting but may be counterproductive on a road course.
+- Let a race session define run type: drift judged run, lap, stint, drag pass, test/qualifying. Sports-specific UI can be composed on the common engine rather than forced into one drift-centric dashboard.
+- Keep diagnostic outputs read-only and separate mechanical health observations from driver coaching and race strategy.
+
+### Potential discipline modules (unvalidated concepts)
+
+- **Drift (MVP):** car body slip angle, track/clipping zones, initiation, transitions, consistency, lead/chase when validated.
+- **Circuit / SCCA club racing:** braking markers, apex/line, exit speed, segment times, tire temperatures (if logged), reproducibility.
+- **Endurance / Le Mans-style racing:** stint consistency, fuel use, temperature trends, tire-performance changes and comparisons between drivers where data exists.
+- **Drag racing:** launch/60-foot/segment times, wheelspin, acceleration, shift execution, power-delivery or fuel-pressure anomalies when sensors support them.
+- Event-specific recommendations must use validated sensor channels, sanctioned rule references where applicable, and explicit limitations. Le Mans-level team capabilities are a distant ambition, not a current product claim.
+
+### Business hypothesis to test later
+
+A reliable, affordable motorsport **data interpreter and coach-facing workflow** could interest grassroots drivers and instructors. Existing professional telemetry and coaching systems make this a competitive market; do not presume unmet demand. Validate usefulness and willingness to pay with users before broadening scope.
+
+### Decision guardrail
+
+**Do not build modules for other disciplines yet.** First validate Assetto Corsa drift replay decoding and track-zone analysis, then prove the same evidence schema can accept another telemetry source. Revisit branding and broader architecture only if real user evidence supports expansion. Retain current motto: *Understand the car. Master the drift.*
+
 ## Known constraints / uncertainties
 
 - Existing Escanor instructions describe Assetto Corsa single-car `.acreplay` v16 decoding; an independent executable decoder and test replay are not yet in this repository.
