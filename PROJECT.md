@@ -20,6 +20,40 @@ Build an approachable, local-first drifting coach so drivers can learn from reli
 - Support track layout, sections, zones and provenance; teach through data and controlled experiments.
 - Start with Assetto Corsa; add **MoTeC i2 telemetry import/export compatibility** as a planned capability.
 - Preserve honest uncertainty, driver feel, and **one change at a time** in setup tests.
+- Two planned editions: **Escanor Sim** (Assetto Corsa, free and open source) and **Escanor Motorsport** (real-world telemetry, paid product with inspectable/source-available code; precise licensing model pending).
+- Real-world edition should support **off-the-shelf motorsport loggers** as well as an optional **Escanor-tested, known-good hardware kit**.
+- Explore **track-day hardware rentals** and ongoing maintenance/support revenue, keeping grassroots accessibility central.
+
+## Product and business direction — November 17, 2026
+
+### Escanor Sim — free / open source
+
+- Local Assetto Corsa replay decoding, track and zone analysis, AI-independent exports, coaching, setup experiments.
+- Public-source community project; specific approved open-source license to be selected before accepting contributions or distributing code.
+- No paywall on essential simulator analysis.
+
+### Escanor Motorsport — paid / source visibility required
+
+- Real-world analysis fed by GNSS, IMU, optional ECU/CAN and third-party motorsport telemetry or MoTeC-compatible exports.
+- Potential paid official software distribution, updates, installation and maintenance/support; optional known-good hardware bundles and track-day rentals.
+- Open interface/specifications and ability to inspect code are goals; whether the **real-world edition** is fully OSI-open-source or source-available under a commercial license is **undecided**.
+- IMPORTANT: an OSI-compliant open-source license permits redistribution, including free redistribution. Charging for copies and services is allowed, but the license cannot ensure that every user pays. A paid-use requirement for the code itself generally entails source-available rather than open-source licensing.
+- Investigate clean module boundaries and IP ownership/contributor terms before choosing copyleft, commercial, or dual-licensing approaches. Obtain qualified legal review before commercial launch.
+- Keep motor-vehicle analysis post-run, document GNSS/IMU calibration uncertainty, and avoid safety-critical real-time driving instruction.
+
+### Proposed shared engine
+
+```text
+Assetto Corsa replay adapter       GNSS / IMU / ECU / logger adapter
+              \\                     /
+               Common telemetry schema
+                       |
+       Validated metrics, line and zone analysis
+                       |
+          Local reports / provider-neutral AI
+                       |
+       Escanor Sim UI or Motorsport UI
+```
 
 ## Proposed architecture — not yet finalized
 
@@ -91,7 +125,7 @@ Python, FastAPI, React, SQLite; Ollama or compatible endpoint for local models.
 
 ## Open decisions
 
-- License before inviting contributors or distributing code.
+- Choose open-source license for Sim, and determine whether Motorsport is true open-source with paid services or source-available with a paid-use license (and whether dual licensing is appropriate).
 - Final frontend/backend/database selection.
 - Track profile format and zone-review process.
 - MoTeC i2 input formats and supported data acquisition workflows.
