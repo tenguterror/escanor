@@ -33,7 +33,7 @@ Escanor aims to help Assetto Corsa drivers understand what their car is doing, i
 - SQLite run history
 - Export-first AI workflow; optional Anthropic, OpenAI, Gemini, and Ollama adapters later
 
-See [PROJECT.md](PROJECT.md) for decisions, architecture, milestones, and open questions.
+See [PROJECT.md](PROJECT.md) for the active plan, progress, and open questions, and [VISION.md](VISION.md) for the long-term roadmap.
 
 ## Safety and data integrity
 
