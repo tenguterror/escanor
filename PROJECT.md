@@ -249,16 +249,45 @@ Python, FastAPI, React, SQLite; Ollama or compatible endpoint for local models.
 
 - Created `inspect_replay.py`, a Python command-line utility.
 - Accepts a user-supplied replay file path.
-- Reads and displays the first 32 bytes of a replay.
-- Decodes the first four bytes as a little-endian version number.
-- Confirmed version 16 using a local E46 Bihoku replay.
+- Reads the first 52 bytes of a replay and prints them as hex.
+- Decodes bytes 0–3 as a little-endian version number (confirmed 16 on a local E46 Bihoku replay).
+- Skips bytes 4–11 (meaning not yet documented).
+- Decodes a length-prefixed weather preset string, then a length-prefixed track name string.
 - Tested missing arguments, nonexistent files, and incomplete headers.
 - All four manual tests passed.
 
-**Status:** Header inspection working. Full replay decoding and
+**Status:** Header inspection working on the known replay. Full replay decoding and
 telemetry extraction are not yet implemented or validated.
 
+### November 18, 2026 — Code review of `inspect_replay.py` (Baus / Claude, branch `claude`)
+
+Tested with synthetic files only; the real E46 replay was **not** available to the reviewer.
+
+**Bugs (confirmed with synthetic files):**
+
+1. **Silent truncation.** The script reads a fixed 52 bytes, but the weather and track strings are variable length. With a 32-character weather name, the track name came out as an **empty string with no error**. It works on the E46 replay only because those strings happen to be short. Wrong output with no error is the worst kind of failure for a "measure first" project.
+2. **Crash on bad bytes.** A non-UTF-8 string (corrupt file, or a file that isn't a replay) raises a raw `UnicodeDecodeError` traceback instead of a clear error.
+
+**Risks / gaps:**
+
+3. **No sanity checks on lengths.** A garbage length value (e.g. 4 billion) is trusted as-is. Real binary parsers check that a length is reasonable *and* that enough bytes actually exist before slicing.
+4. **Version is printed, not checked.** The parser assumes the v16 layout but would happily parse a v15 or v17 file with the same offsets.
+5. **Mystery bytes 4–11.** Undocumented skipped bytes in a binary format are a future bug. Identify them or note them as unknown in a format spec.
+6. **All top-level script code.** Nothing can be imported or unit tested. Fine for a first spike; it becomes the bottleneck as soon as there's a second field to parse.
+
+**Docs drift:** This log previously said "first 32 bytes" while the code read 52 and also parsed weather/track. Keep the log in sync with each commit.
+
+## Team workflow
+
+- `main` — Tengu's branch; source of truth.
+- `claude` — Baus (Claude) updates `PROJECT.md` here: reviews, decisions, progress log. Tengu reviews and merges into `main`.
+- Tengu writes the Python. Reviewer branches change documentation only unless Tengu explicitly asks for code.
+
 ## Next action
+
+**Fix the silent-truncation bug in `inspect_replay.py`** (review item 1): make the parser read each length-prefixed string based on its actual length instead of a fixed 52-byte window, and fail loudly when the file runs out of bytes. Prove it with a test file whose weather name is longer than the E46 one.
+
+Then continue:
 
 **Validate replay decoding** against one uploaded, known-good E46 `.acreplay`; retain it locally as a private test fixture and record independently verified expected measurements. Do not publish the raw replay without permission.
 
