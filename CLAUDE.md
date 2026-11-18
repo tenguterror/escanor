@@ -19,7 +19,7 @@ It is built for fun and learning, not for work. Motto: **Understand the car. Mas
 
 ## Git workflow
 
-- `main`: Tengu's branch and source of truth. Claude never pushes to `main`.
+- `main`: Tengu's branch and source of truth. Claude never pushes or merges to `main` on its own; it may do so only when Tengu (project manager) explicitly says it's OK. Prefer merging via a Pull Request so there is a record.
 - `claude`: Claude's branch for doc changes. Tengu reviews it (ideally as a Pull Request) and merges.
 - `feature/*`: Tengu's code branches. Claude reviews these PRs.
 - Before editing, sync the `claude` branch with `main` so changes don't drift.
