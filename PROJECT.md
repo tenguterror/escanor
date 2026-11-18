@@ -32,7 +32,7 @@ Only work that moves the **MVP** forward belongs in this file. New ideas go to V
 
 ## Platform constraint (short version)
 
-Windows and Linux first. Development happens on WSL2, but the app must not depend on WSL. Use `pathlib` and user-selected directories; never hardcode paths like `C:\\Users\\vegas` or `/mnt/c`. Full details are in VISION.md.
+Windows and Linux first. Development happens on WSL2, but the app must not depend on WSL. Use `pathlib` and user-selected directories; never hardcode paths like `C:\Users\vegas` or `/mnt/c`. Full details are in VISION.md.
 
 ## Data contract
 
