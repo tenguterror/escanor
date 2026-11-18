@@ -243,6 +243,21 @@ A reliable, affordable motorsport **data interpreter and coach-facing workflow**
 
 Python, FastAPI, React, SQLite; Ollama or compatible endpoint for local models.
 
+## Development progress
+
+### November 17, 2026 — Replay header inspector
+
+- Created `inspect_replay.py`, a Python command-line utility.
+- Accepts a user-supplied replay file path.
+- Reads and displays the first 32 bytes of a replay.
+- Decodes the first four bytes as a little-endian version number.
+- Confirmed version 16 using a local E46 Bihoku replay.
+- Tested missing arguments, nonexistent files, and incomplete headers.
+- All four manual tests passed.
+
+**Status:** Header inspection working. Full replay decoding and
+telemetry extraction are not yet implemented or validated.
+
 ## Next action
 
 **Validate replay decoding** against one uploaded, known-good E46 `.acreplay`; retain it locally as a private test fixture and record independently verified expected measurements. Do not publish the raw replay without permission.
