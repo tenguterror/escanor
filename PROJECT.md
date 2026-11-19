@@ -68,7 +68,7 @@ Python, FastAPI, React, SQLite; Ollama or compatible endpoint for local models.
 
 | Component | Status |
 |---|---|
-| `inspect_replay.py` | v1 spike works on the E46 replay, has known bugs; **being rewritten from scratch** |
+| `inspect_replay.py` | Rewrite in progress: step 1 done (reads and decodes the version); v1 is in git history |
 | Common telemetry schema | Not started |
 | Track profiles | Not started |
 | Web app | Not started |
@@ -105,6 +105,16 @@ Tested with synthetic files only; the real E46 replay was **not** available to t
 
 **Docs drift:** This log previously said "first 32 bytes" while the code read 52 and also parsed weather/track. Keep the log in sync with each commit.
 
+### November 18, 2026 — Rewrite step 1 done (PR #3)
+
+- Tengu deleted v1 and rewrote `inspect_replay.py` from scratch on `feature/inspector-step-1`.
+- Opens the replay in binary mode, reads exactly 4 bytes, and decodes them as a little-endian integer.
+- Verified on the real E46 Bihoku replay (Tengu's local run): `xxd` shows `10 00 00 00`, and the script prints `Version: 16`.
+- Experiment: decoding the same bytes as big-endian gives 268,435,456 **with no error**. This is the reason step 4 must reject any version other than 16.
+- Reviewed by Baus on PR #3 and merged into `main` by Tengu.
+- Follow-ups from the review: hardcoded personal path (handled in step 4), missing final newline, rename `header` → `version_bytes`.
+- Observed in the real replay: bytes 4–11 are `00 00 00 00 00 00 2e 40`; bytes 12–15 are `17 00 00 00`, followed by the weather text `sol_03_scattered...`. Not yet decoded; inputs for steps 2 and 5.
+
 ## Replay inspector rewrite plan
 
 Tengu is rewriting `inspect_replay.py` from scratch to learn binary parsing properly. Baus reviews; Tengu writes the code. One step at a time; each step must run before the next starts.
@@ -113,14 +123,16 @@ The v1 file stays in git history (commit `08e6c1d`) as a reference. It does not 
 
 | Step | Goal | Done when |
 |---|---|---|
-| 1 | Open a replay in binary mode and print the version number | Prints `16` for the E46 replay |
+| 1 ✅ | Open a replay in binary mode and print the version number | Prints `16` for the E46 replay (done Nov 18, PR #3) |
 | 2 | Read the weather string by its real length, not a fixed window | Works on a synthetic file with a 32+ character weather name |
 | 3 | Move "read a length-prefixed string" into one reusable function; use it for weather and track | Both strings come from the same function |
-| 4 | Fail loudly: short reads, unreasonable lengths, non-UTF-8 bytes, version ≠ 16 | Each case prints a clear error and exits non-zero; no tracebacks |
+| 4 | Fail loudly: short reads, unreasonable lengths, non-UTF-8 bytes, version ≠ 16. Take the replay path as a command-line argument instead of hardcoding it | Each case prints a clear error and exits non-zero; no tracebacks; no personal paths in the code |
 | 5 | Identify bytes 4–11 | Documented in a format notes file, or marked "unknown" with evidence |
 | 6 | Automated tests (pytest) using synthetic replay files | Tests cover every bug from the review |
 
-**Current step:** 1
+**Current step:** 2
+
+**Milestone — the Catalina Wine Mixer 🍷:** the day Escanor decodes a full Bihoku run end to end. Biggest event of the year.
 
 ## Team workflow
 
@@ -130,7 +142,7 @@ The v1 file stays in git history (commit `08e6c1d`) as a reference. It does not 
 
 ## Next action
 
-**Rewrite step 1:** the smallest runnable inspector that opens a replay and prints its version.
+**Rewrite step 2:** read the weather string by its real length. Read the 4-byte length at offset 12, then read exactly that many bytes and decode them as text. Prove it on the real E46 replay, then on a synthetic file with a 32+ character weather name.
 
 Then continue the rewrite plan, and afterwards **validate replay decoding** against the known-good E46 `.acreplay`. Keep it locally as a private test fixture, record independently verified expected measurements, and do not publish the raw replay without permission.
 
