@@ -50,6 +50,21 @@ Windows and Linux first. Development happens on WSL2, but the app must not depen
 4. Export measured report + AI prompt and save driver feel.
 5. Compare repeated runs, preserving one-change test protocol.
 
+## Golden test replay
+
+The known-good replay every parsing step is checked against. **Private: never committed** (`data/private/` and `*.acreplay` are git-ignored).
+
+| Field | Value |
+|---|---|
+| Local path | `data/private/e46_bihoku_golden.acreplay` |
+| Original | AC replay `temp` folder, `AC_171126-193711_..._bmw_e46_..._bihoku_highland...acreplay` |
+| Size | 31 MB |
+| SHA-256 | `3d6b3fa096e47f5ff5c2ca26f848d062b2c5cb09986a9db90993822fec5b5234` |
+| Copied / verified | November 18, 2026. Tengu's `sha256sum` of original and copy matched |
+| Known values | version 16; weather name length 23; weather `sol_03_scattered_clouds` |
+
+Verify before trusting results: `sha256sum data/private/e46_bihoku_golden.acreplay` must print the hash above. If it doesn't, the fixture has changed and every "known value" is suspect.
+
 ## Known constraints / uncertainties
 
 - Existing Escanor instructions describe Assetto Corsa single-car `.acreplay` v16 decoding; an independent executable decoder and test replay are not yet in this repository.

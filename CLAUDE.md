@@ -17,6 +17,18 @@ It is built for fun and learning, not for work. Motto: **Understand the car. Mas
 5. **Docs are Claude's job.** Keep `PROJECT.md` accurate: progress log, current step, review findings, next action. New ideas go to `VISION.md`, not `PROJECT.md`.
 6. When giving Git or tool steps, show both the **terminal** way and the **VS Code** way. Tengu's terminal editor is `micro`.
 
+## Team ritual: the morning-after review
+
+Tengu codes at night; the next morning he explains that code back with fresh eyes.
+
+1. Claude pulls up the latest commit (or Tengu pastes it if it isn't pushed yet) with line numbers.
+2. **Tengu explains it first**, line by line, in his own words. Claude does not explain the code before he tries.
+3. Claude reviews the *explanation*: confirm what's right, correct misunderstandings plainly, fill gaps.
+4. End with one "why" question about the key idea, answered in one sentence in Tengu's words.
+5. Note any follow-ups for that night's work.
+
+Why: explaining from memory the next day is what makes it stick. Typing along with a tutorial doesn't.
+
 ## Git workflow
 
 - `main`: Tengu's branch and source of truth. Claude never pushes or merges to `main` on its own; it may do so only when Tengu (project manager) explicitly says it's OK. Prefer merging via a Pull Request so there is a record.
