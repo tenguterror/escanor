@@ -83,7 +83,8 @@ Python, FastAPI, React, SQLite; Ollama or compatible endpoint for local models.
 
 | Component | Status |
 |---|---|
-| `inspect_replay.py` | Rewrite in progress: step 1 done (reads and decodes the version); v1 is in git history |
+| `inspect_replay.py` | Rewrite in progress: steps 1–2 done (version; weather name read by its real length); v1 is in git history |
+| `make_fake_replay.py` | Writes a synthetic replay header (version, 8 zero bytes, measured length, weather name) to `data/private/fake_replay.acreplay` |
 | Common telemetry schema | Not started |
 | Track profiles | Not started |
 | Web app | Not started |
@@ -130,6 +131,16 @@ Tested with synthetic files only; the real E46 replay was **not** available to t
 - Follow-ups from the review: hardcoded personal path (handled in step 4), missing final newline, rename `header` → `version_bytes`.
 - Observed in the real replay: bytes 4–11 are `00 00 00 00 00 00 2e 40`; bytes 12–15 are `17 00 00 00`, followed by the weather text `sol_03_scattered...`. Not yet decoded; inputs for steps 2 and 5.
 
+### November 19, 2026 — Rewrite step 2 done (PR #7)
+
+- Inspector reads the 12 bytes after the version (`pre_weather_bytes`), takes the length from `[8:12]`, then reads **exactly that many bytes** from the file and decodes them as UTF-8. This fixes v1's silent-truncation bug: the file says how long the name is instead of the code guessing.
+- Verified on the golden E46 replay (Tengu's local run): length 23, `sol_03_scattered_clouds`.
+- New `make_fake_replay.py` writes a synthetic header with a 40-character weather name. Its length field is **measured** with `len()`, not hand-typed.
+- Verified on the fake (Tengu's run, and Baus re-ran both scripts from the branch): length 40, full `tengu_lionheart_extra_long_weather_name!`.
+- Tengu demonstrated the failure mode first: a 10-byte name under a length field that still said 40.
+- Morning-after review held Nov 19. Key idea in Tengu's words: *"We get the length instead of guessing and printing out the wrong stuff."*
+- Post-merge review follow-ups: `make_fake_replay.py` crashes on a fresh clone because `data/private/` doesn't exist (confirmed); add a guard against overwriting the golden replay; unused `*_written` variables.
+
 ## Replay inspector rewrite plan
 
 Tengu is rewriting `inspect_replay.py` from scratch to learn binary parsing properly. Baus reviews; Tengu writes the code. One step at a time; each step must run before the next starts.
@@ -139,13 +150,13 @@ The v1 file stays in git history (commit `08e6c1d`) as a reference. It does not 
 | Step | Goal | Done when |
 |---|---|---|
 | 1 ✅ | Open a replay in binary mode and print the version number | Prints `16` for the E46 replay (done Nov 18, PR #3) |
-| 2 | Read the weather string by its real length, not a fixed window | Works on a synthetic file with a 32+ character weather name |
+| 2 ✅ | Read the weather string by its real length, not a fixed window | Works on a synthetic file with a 32+ character weather name (done Nov 19, PR #7) |
 | 3 | Move "read a length-prefixed string" into one reusable function; use it for weather and track | Both strings come from the same function |
 | 4 | Fail loudly: short reads, unreasonable lengths, non-UTF-8 bytes, version ≠ 16. Take the replay path as a command-line argument instead of hardcoding it | Each case prints a clear error and exits non-zero; no tracebacks; no personal paths in the code |
 | 5 | Identify bytes 4–11 | Documented in a format notes file, or marked "unknown" with evidence |
 | 6 | Automated tests (pytest) using synthetic replay files | Tests cover every bug from the review |
 
-**Current step:** 2
+**Current step:** 3
 
 **Milestone — the Catalina Wine Mixer 🍷:** the day Escanor decodes a full Bihoku run end to end. Biggest event of the year.
 
@@ -157,7 +168,9 @@ The v1 file stays in git history (commit `08e6c1d`) as a reference. It does not 
 
 ## Next action
 
-**Rewrite step 2:** read the weather string by its real length. Read the 4-byte length at offset 12, then read exactly that many bytes and decode them as text. Prove it on the real E46 replay, then on a synthetic file with a 32+ character weather name.
+**Rewrite step 3:** move "read a length-prefixed string" into one reusable function, then use it for the weather name *and* the track name that follows it. Add a track name to `make_fake_replay.py` so the fake can test it.
+
+Small follow-ups from the PR #7 review can ride along: create `data/private/` if missing, and guard against overwriting the golden replay.
 
 Then continue the rewrite plan, and afterwards **validate replay decoding** against the known-good E46 `.acreplay`. Keep it locally as a private test fixture, record independently verified expected measurements, and do not publish the raw replay without permission.
 
